@@ -5,69 +5,78 @@
 <meta charset="UTF-8">
 <title>UniSIS Login</title>
 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
 <style>
 body {
   margin: 0;
   font-family: 'Segoe UI';
-  background: #020617;
-  color: white;
+  background: radial-gradient(circle at top, #0f172a, #020617);
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  color: white;
 }
 
-/* Container */
-.container {
-  display: flex;
-  width: 900px;
-  background: #0f172a;
+/* GLASS CARD */
+.card {
+  width: 350px;
+  padding: 30px;
   border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 0 40px rgba(0,0,0,0.6);
+  backdrop-filter: blur(15px);
+  background: rgba(255,255,255,0.05);
+  box-shadow: 0 0 40px rgba(0,255,255,0.2);
+  animation: fade 1s ease;
 }
 
-/* LEFT SIDE */
-.left {
-  width: 50%;
-  padding: 40px;
-  background: linear-gradient(135deg,#020617,#0f172a);
-}
-
-.left h1 {
+/* TITLE */
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
   color: #38bdf8;
 }
 
-.feature {
-  margin-top: 20px;
-  opacity: 0.8;
+/* INPUT BOX */
+.input-box {
+  position: relative;
+  margin-bottom: 15px;
 }
 
-/* RIGHT SIDE */
-.right {
-  width: 50%;
-  padding: 40px;
-}
-
-input {
+.input-box input {
   width: 100%;
-  padding: 12px;
-  margin: 10px 0;
-  border-radius: 8px;
+  padding: 12px 40px;
+  border-radius: 10px;
   border: none;
   background: #1e293b;
   color: white;
 }
 
+.input-box i {
+  position: absolute;
+  top: 12px;
+  left: 10px;
+  color: #38bdf8;
+}
+
+/* BUTTON */
 button {
   width: 100%;
   padding: 12px;
   margin-top: 10px;
-  background: #3b82f6;
+  border-radius: 10px;
   border: none;
-  color: white;
-  border-radius: 8px;
   cursor: pointer;
+  transition: 0.3s;
+}
+
+.primary {
+  background: #3b82f6;
+  box-shadow: 0 0 15px #3b82f6;
+}
+
+.primary:hover {
+  transform: scale(1.05);
 }
 
 .google {
@@ -75,57 +84,46 @@ button {
   color: black;
 }
 
-/* Tabs */
-.tabs {
-  display: flex;
-  margin-bottom: 20px;
-}
-
-.tab {
-  flex: 1;
-  padding: 10px;
+/* TEXT */
+.switch {
   text-align: center;
+  margin-top: 10px;
   cursor: pointer;
-  background: #1e293b;
+  color: #38bdf8;
 }
 
-.active {
-  background: #3b82f6;
+/* ANIMATION */
+@keyframes fade {
+  from {opacity:0; transform: translateY(30px);}
+  to {opacity:1; transform: translateY(0);}
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="card">
 
-  <!-- LEFT -->
-  <div class="left">
-    <h1>UniSIS</h1>
-    <p>Student Information System</p>
+  <h2 id="title">Welcome Back 👋</h2>
 
-    <div class="feature">📊 Dashboard & Analytics</div>
-    <div class="feature">👨‍🎓 Student Management</div>
-    <div class="feature">📅 Attendance Tracking</div>
-    <div class="feature">📝 Grades & Results</div>
+  <div class="input-box">
+    <i class="fa fa-envelope"></i>
+    <input id="email" placeholder="Email">
   </div>
 
-  <!-- RIGHT -->
-  <div class="right">
-
-    <div class="tabs">
-      <div class="tab active" onclick="switchTab('login')">Login</div>
-      <div class="tab" onclick="switchTab('register')">Register</div>
-    </div>
-
-    <h2 id="title">Welcome Back 👋</h2>
-
-    <input id="email" placeholder="Email">
+  <div class="input-box">
+    <i class="fa fa-lock"></i>
     <input id="password" type="password" placeholder="Password">
+  </div>
 
-    <button onclick="handleAuth()">Sign In</button>
-    <button class="google">Continue with Google</button>
+  <button class="primary" onclick="handleAuth()">Login</button>
 
+  <button class="google" onclick="googleLogin()">
+    <i class="fa-brands fa-google"></i> Continue with Google
+  </button>
+
+  <div class="switch" onclick="toggleMode()">
+    Create account
   </div>
 
 </div>
@@ -133,17 +131,20 @@ button {
 <!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+
 import {
   getAuth,
   signInWithEmailAndPassword,
-  createUserWithEmailAndPassword
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-// 🔴 REPLACE THIS
+// YOUR CONFIG
 const firebaseConfig = {
-  apiKey: "YOUR_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
+  apiKey: "AIzaSyDIVgcyflRaYXwaV5wSeKjb1wsocNdpd_8",
+  authDomain: "student-ef9fa.firebaseapp.com",
+  projectId: "student-ef9fa",
 };
 
 const app = initializeApp(firebaseConfig);
@@ -151,16 +152,14 @@ const auth = getAuth(app);
 
 let mode = "login";
 
-window.switchTab = (type) => {
-  mode = type;
-
-  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-  event.target.classList.add("active");
-
+// SWITCH LOGIN/REGISTER
+window.toggleMode = () => {
+  mode = mode === "login" ? "register" : "login";
   document.getElementById("title").innerText =
-    type === "login" ? "Welcome Back 👋" : "Create Account 🚀";
+    mode === "login" ? "Welcome Back 👋" : "Create Account 🚀";
 };
 
+// LOGIN / REGISTER
 window.handleAuth = async () => {
   const email = document.getElementById("email").value;
   const pass = document.getElementById("password").value;
@@ -168,15 +167,20 @@ window.handleAuth = async () => {
   try {
     if (mode === "login") {
       await signInWithEmailAndPassword(auth, email, pass);
-      alert("Login Success");
-      window.location = "dashboard.html";
     } else {
       await createUserWithEmailAndPassword(auth, email, pass);
-      alert("Registered Successfully");
     }
+    window.location = "dashboard.html";
   } catch (e) {
     alert(e.message);
   }
+};
+
+// GOOGLE LOGIN
+window.googleLogin = async () => {
+  const provider = new GoogleAuthProvider();
+  await signInWithPopup(auth, provider);
+  window.location = "dashboard.html";
 };
 </script>
 
