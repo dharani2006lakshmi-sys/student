@@ -1,19 +1,185 @@
+```html
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Login - UniSIS</title>
-<link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>UniSIS Login</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Segoe UI';
+  background: #020617;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* Container */
+.container {
+  display: flex;
+  width: 900px;
+  background: #0f172a;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 0 40px rgba(0,0,0,0.6);
+}
+
+/* LEFT SIDE */
+.left {
+  width: 50%;
+  padding: 40px;
+  background: linear-gradient(135deg,#020617,#0f172a);
+}
+
+.left h1 {
+  color: #38bdf8;
+}
+
+.feature {
+  margin-top: 20px;
+  opacity: 0.8;
+}
+
+/* RIGHT SIDE */
+.right {
+  width: 50%;
+  padding: 40px;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: none;
+  background: #1e293b;
+  color: white;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  background: #3b82f6;
+  border: none;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.google {
+  background: white;
+  color: black;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  background: #1e293b;
+}
+
+.active {
+  background: #3b82f6;
+}
+</style>
 </head>
+
 <body>
 
-<div class="center">
-<h2>Login</h2>
-<input id="email" placeholder="Email"><br>
-<input id="password" type="password" placeholder="Password"><br>
-<button onclick="login()">Login</button>
-<button onclick="register()">Register</button>
+<div class="container">
+
+  <!-- LEFT -->
+  <div class="left">
+    <h1>UniSIS</h1>
+    <p>Student Information System</p>
+
+    <div class="feature">📊 Dashboard & Analytics</div>
+    <div class="feature">👨‍🎓 Student Management</div>
+    <div class="feature">📅 Attendance Tracking</div>
+    <div class="feature">📝 Grades & Results</div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right">
+
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('login')">Login</div>
+      <div class="tab" onclick="switchTab('register')">Register</div>
+    </div>
+
+    <h2 id="title">Welcome Back 👋</h2>
+
+    <input id="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
+
+    <button onclick="handleAuth()">Sign In</button>
+    <button class="google">Continue with Google</button>
+
+  </div>
+
 </div>
 
-<script type="module" src="auth.js"></script>
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+// 🔴 REPLACE THIS
+const firebaseConfig = {
+  apiKey: "YOUR_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+let mode = "login";
+
+window.switchTab = (type) => {
+  mode = type;
+
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  event.target.classList.add("active");
+
+  document.getElementById("title").innerText =
+    type === "login" ? "Welcome Back 👋" : "Create Account 🚀";
+};
+
+window.handleAuth = async () => {
+  const email = document.getElementById("email").value;
+  const pass = document.getElementById("password").value;
+
+  try {
+    if (mode === "login") {
+      await signInWithEmailAndPassword(auth, email, pass);
+      alert("Login Success");
+      window.location = "dashboard.html";
+    } else {
+      await createUserWithEmailAndPassword(auth, email, pass);
+      alert("Registered Successfully");
+    }
+  } catch (e) {
+    alert(e.message);
+  }
+};
+</script>
+
 </body>
 </html>
+```
