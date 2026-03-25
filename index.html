@@ -1,11 +1,9 @@
-html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>UniSIS Login</title>
 
-<!-- Icons -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
 <style>
@@ -27,14 +25,13 @@ body {
   border-radius: 20px;
   overflow: hidden;
   background: #0f172a;
-  box-shadow: 0 0 50px rgba(0,0,0,0.6);
+  box-shadow: 0 0 60px rgba(0,0,0,0.7);
 }
 
 /* LEFT */
 .left {
   width: 50%;
   padding: 40px;
-  background: linear-gradient(135deg,#020617,#0f172a);
 }
 
 .left h1 {
@@ -42,16 +39,14 @@ body {
 }
 
 .feature {
-  margin-top: 20px;
-  display: flex;
-  gap: 10px;
-  opacity: 0.9;
+  margin-top: 15px;
 }
 
 /* RIGHT */
 .right {
   width: 50%;
   padding: 40px;
+  background: rgba(255,255,255,0.03);
 }
 
 /* TABS */
@@ -106,14 +101,12 @@ button {
 
 .primary {
   background: #3b82f6;
-  color: white;
 }
 
 .google {
   background: white;
   color: black;
 }
-
 </style>
 </head>
 
@@ -121,18 +114,18 @@ button {
 
 <div class="container">
 
-  <!-- LEFT SIDE -->
+  <!-- LEFT -->
   <div class="left">
     <h1>UniSIS</h1>
     <p>Student Information System</p>
 
-    <div class="feature"><i class="fa fa-chart-line"></i> Dashboard & Analytics</div>
-    <div class="feature"><i class="fa fa-user-graduate"></i> Student Management</div>
-    <div class="feature"><i class="fa fa-calendar"></i> Attendance</div>
-    <div class="feature"><i class="fa fa-pen"></i> Grades</div>
+    <div class="feature">📊 Dashboard & Analytics</div>
+    <div class="feature">🎓 Student Management</div>
+    <div class="feature">📅 Attendance</div>
+    <div class="feature">📝 Grades</div>
   </div>
 
-  <!-- RIGHT SIDE -->
+  <!-- RIGHT -->
   <div class="right">
 
     <div class="tabs">
@@ -154,19 +147,14 @@ button {
 
     <button id="btn" class="primary" onclick="handleAuth()">Sign In</button>
 
-    <button class="google" onclick="googleLogin()">
-      <i class="fa-brands fa-google"></i> Continue with Google
-    </button>
+    <button class="google" onclick="googleLogin()">Continue with Google</button>
 
   </div>
 
 </div>
 
-<!-- FIREBASE -->
 <script type="module">
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-
 import {
   getAuth,
   signInWithEmailAndPassword,
@@ -175,7 +163,6 @@ import {
   signInWithPopup
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-// 🔥 YOUR FIREBASE CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyDIVgcyflRaYXwaV5wSeKjb1wsocNdpd_8",
   authDomain: "student-ef9fa.firebaseapp.com",
@@ -187,7 +174,6 @@ const auth = getAuth(app);
 
 let mode = "login";
 
-// SWITCH TAB
 window.switchTab = (type) => {
   mode = type;
 
@@ -205,7 +191,6 @@ window.switchTab = (type) => {
   }
 };
 
-// LOGIN / REGISTER
 window.handleAuth = async () => {
   const email = document.getElementById("email").value;
   const pass = document.getElementById("password").value;
@@ -222,13 +207,11 @@ window.handleAuth = async () => {
   }
 };
 
-// GOOGLE LOGIN
 window.googleLogin = async () => {
   const provider = new GoogleAuthProvider();
   await signInWithPopup(auth, provider);
   window.location = "dashboard.html";
 };
-
 </script>
 
 </body>
