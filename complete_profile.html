@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Complete Profile</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="firebase.js"></script>
+</head>
+<body>
+  <div id="navbar"></div>
+  <h1>Complete Your Profile</h1>
+  <form onsubmit="event.preventDefault(); saveProfile(className.value, phone.value)">
+    <input type="text" id="className" placeholder="Class" required>
+    <input type="text" id="phone" placeholder="Phone" required>
+    <button type="submit">Save Profile</button>
+  </form>
+</body>
+</html>
