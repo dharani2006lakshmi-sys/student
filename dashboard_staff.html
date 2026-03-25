@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Staff Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="firebase.js"></script>
+</head>
+<body>
+  <div id="navbar"></div>
+  <h1>Staff Dashboard</h1>
+  <p>Welcome Staff! Manage all student records here.</p>
+  <form onsubmit="event.preventDefault(); addStudent(stName.value, stClass.value, stEmail.value)">
+    <input type="text" id="stName" placeholder="Name" required>
+    <input type="text" id="stClass" placeholder="Class" required>
+    <input type="email" id="stEmail" placeholder="Email" required>
+    <button type="submit">Add Student</button>
+  </form>
+
+  <h2>Student List</h2>
+  <table>
+    <thead>
+      <tr><th>Name</th><th>Class</th><th>Email</th><th>Action</th></tr>
+    </thead>
+    <tbody id="studentTable"></tbody>
+  </table>
+
+  <button onclick="logoutUser()">Logout</button>
+</body>
+</html>
