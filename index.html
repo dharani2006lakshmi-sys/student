@@ -5,36 +5,71 @@
 <meta charset="UTF-8">
 <title>UniSIS Login</title>
 
+<!-- Icons -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
 <style>
 body {
   margin: 0;
   font-family: 'Segoe UI';
-  background: radial-gradient(circle at top, #1a0125, #020617);
+  background: radial-gradient(circle at top, #0f172a, #020617);
+  color: white;
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: white;
 }
 
-/* GLASS CARD */
-.card {
-  width: 360px;
-  padding: 30px;
+/* CONTAINER */
+.container {
+  display: flex;
+  width: 900px;
   border-radius: 20px;
-  backdrop-filter: blur(20px);
-  background: rgba(255,255,255,0.05);
-  box-shadow: 0 0 50px rgba(168,85,247,0.4);
-  animation: fade 1s ease;
+  overflow: hidden;
+  background: #0f172a;
+  box-shadow: 0 0 50px rgba(0,0,0,0.6);
 }
 
-/* TITLE */
-h2 {
-  text-align: center;
+/* LEFT */
+.left {
+  width: 50%;
+  padding: 40px;
+  background: linear-gradient(135deg,#020617,#0f172a);
+}
+
+.left h1 {
+  color: #3b82f6;
+}
+
+.feature {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  opacity: 0.9;
+}
+
+/* RIGHT */
+.right {
+  width: 50%;
+  padding: 40px;
+}
+
+/* TABS */
+.tabs {
+  display: flex;
   margin-bottom: 20px;
-  color: #a855f7;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  background: #1e293b;
+}
+
+.active {
+  background: #3b82f6;
 }
 
 /* INPUT */
@@ -48,7 +83,7 @@ h2 {
   padding: 12px 40px;
   border-radius: 10px;
   border: none;
-  background: #1e1b4b;
+  background: #1e293b;
   color: white;
 }
 
@@ -56,7 +91,7 @@ h2 {
   position: absolute;
   top: 12px;
   left: 10px;
-  color: #a855f7;
+  color: #3b82f6;
 }
 
 /* BUTTON */
@@ -67,68 +102,71 @@ button {
   border-radius: 10px;
   border: none;
   cursor: pointer;
-  transition: 0.3s;
 }
 
 .primary {
-  background: #a855f7;
-  box-shadow: 0 0 20px #a855f7;
+  background: #3b82f6;
+  color: white;
 }
 
-.primary:hover {
-  transform: scale(1.05);
-}
-
-/* GOOGLE */
 .google {
   background: white;
   color: black;
 }
 
-/* SWITCH */
-.switch {
-  text-align: center;
-  margin-top: 10px;
-  cursor: pointer;
-  color: #c084fc;
-}
-
-/* ANIMATION */
-@keyframes fade {
-  from {opacity:0; transform: translateY(30px);}
-  to {opacity:1; transform: translateY(0);}
-}
 </style>
 </head>
 
 <body>
 
-<div class="card">
+<div class="container">
 
-  <h2 id="title">Welcome Back 👋</h2>
+  <!-- LEFT SIDE -->
+  <div class="left">
+    <h1>UniSIS</h1>
+    <p>Student Information System</p>
 
-  <div class="input-box">
-    <i class="fa fa-envelope"></i>
-    <input id="email" placeholder="Email">
+    <div class="feature"><i class="fa fa-chart-line"></i> Dashboard & Analytics</div>
+    <div class="feature"><i class="fa fa-user-graduate"></i> Student Management</div>
+    <div class="feature"><i class="fa fa-calendar"></i> Attendance</div>
+    <div class="feature"><i class="fa fa-pen"></i> Grades</div>
   </div>
 
-  <div class="input-box">
-    <i class="fa fa-lock"></i>
-    <input id="password" type="password" placeholder="Password">
+  <!-- RIGHT SIDE -->
+  <div class="right">
+
+    <div class="tabs">
+      <div id="loginTab" class="tab active" onclick="switchTab('login')">Login</div>
+      <div id="registerTab" class="tab" onclick="switchTab('register')">Register</div>
+    </div>
+
+    <h2 id="title">Welcome Back 👋</h2>
+
+    <div class="input-box">
+      <i class="fa fa-envelope"></i>
+      <input id="email" placeholder="Email">
+    </div>
+
+    <div class="input-box">
+      <i class="fa fa-lock"></i>
+      <input id="password" type="password" placeholder="Password">
+    </div>
+
+    <button id="btn" class="primary" onclick="handleAuth()">Sign In</button>
+
+    <button class="google" onclick="googleLogin()">
+      <i class="fa-brands fa-google"></i> Continue with Google
+    </button>
+
   </div>
-
-  <button class="primary" onclick="handleAuth()">Login</button>
-
-  <button class="google" onclick="googleLogin()">
-    <i class="fa-brands fa-google"></i> Continue with Google
-  </button>
-
-  <div class="switch" onclick="toggleMode()">Create account</div>
 
 </div>
 
+<!-- FIREBASE -->
 <script type="module">
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+
 import {
   getAuth,
   signInWithEmailAndPassword,
@@ -137,6 +175,7 @@ import {
   signInWithPopup
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
+// 🔥 YOUR FIREBASE CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyDIVgcyflRaYXwaV5wSeKjb1wsocNdpd_8",
   authDomain: "student-ef9fa.firebaseapp.com",
@@ -148,12 +187,25 @@ const auth = getAuth(app);
 
 let mode = "login";
 
-window.toggleMode = () => {
-  mode = mode === "login" ? "register" : "login";
-  document.getElementById("title").innerText =
-    mode === "login" ? "Welcome Back 👋" : "Create Account 🚀";
+// SWITCH TAB
+window.switchTab = (type) => {
+  mode = type;
+
+  document.getElementById("loginTab").classList.remove("active");
+  document.getElementById("registerTab").classList.remove("active");
+
+  if (type === "login") {
+    document.getElementById("loginTab").classList.add("active");
+    document.getElementById("btn").innerText = "Sign In";
+    document.getElementById("title").innerText = "Welcome Back 👋";
+  } else {
+    document.getElementById("registerTab").classList.add("active");
+    document.getElementById("btn").innerText = "Register";
+    document.getElementById("title").innerText = "Create Account 🚀";
+  }
 };
 
+// LOGIN / REGISTER
 window.handleAuth = async () => {
   const email = document.getElementById("email").value;
   const pass = document.getElementById("password").value;
@@ -170,11 +222,13 @@ window.handleAuth = async () => {
   }
 };
 
+// GOOGLE LOGIN
 window.googleLogin = async () => {
   const provider = new GoogleAuthProvider();
   await signInWithPopup(auth, provider);
   window.location = "dashboard.html";
 };
+
 </script>
 
 </body>
