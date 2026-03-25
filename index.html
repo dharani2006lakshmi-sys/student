@@ -1,218 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>UniSIS Login</title>
-
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-
-<style>
-body {
-  margin: 0;
-  font-family: 'Segoe UI';
-  background: radial-gradient(circle at top, #0f172a, #020617);
-  color: white;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/* CONTAINER */
-.container {
-  display: flex;
-  width: 900px;
-  border-radius: 20px;
-  overflow: hidden;
-  background: #0f172a;
-  box-shadow: 0 0 60px rgba(0,0,0,0.7);
-}
-
-/* LEFT */
-.left {
-  width: 50%;
-  padding: 40px;
-}
-
-.left h1 {
-  color: #3b82f6;
-}
-
-.feature {
-  margin-top: 15px;
-}
-
-/* RIGHT */
-.right {
-  width: 50%;
-  padding: 40px;
-  background: rgba(255,255,255,0.03);
-}
-
-/* TABS */
-.tabs {
-  display: flex;
-  margin-bottom: 20px;
-}
-
-.tab {
-  flex: 1;
-  padding: 10px;
-  text-align: center;
-  cursor: pointer;
-  background: #1e293b;
-}
-
-.active {
-  background: #3b82f6;
-}
-
-/* INPUT */
-.input-box {
-  position: relative;
-  margin-bottom: 15px;
-}
-
-.input-box input {
-  width: 100%;
-  padding: 12px 40px;
-  border-radius: 10px;
-  border: none;
-  background: #1e293b;
-  color: white;
-}
-
-.input-box i {
-  position: absolute;
-  top: 12px;
-  left: 10px;
-  color: #3b82f6;
-}
-
-/* BUTTON */
-button {
-  width: 100%;
-  padding: 12px;
-  margin-top: 10px;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-}
-
-.primary {
-  background: #3b82f6;
-}
-
-.google {
-  background: white;
-  color: black;
-}
-</style>
+  <meta charset="UTF-8">
+  <title>Student Info System - Login</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="firebase.js"></script>
 </head>
-
 <body>
+  <div id="navbar"></div>
 
-<div class="container">
+  <h1>Student Information Management System</h1>
 
-  <!-- LEFT -->
-  <div class="left">
-    <h1>UniSIS</h1>
-    <p>Student Information System</p>
+  <h2>Register</h2>
+  <form onsubmit="event.preventDefault(); registerUser(regName.value, regEmail.value, regPassword.value)">
+    <input type="text" id="regName" placeholder="Name" required>
+    <input type="email" id="regEmail" placeholder="Email" required>
+    <input type="password" id="regPassword" placeholder="Password" required>
+    <button type="submit">Register</button>
+  </form>
 
-    <div class="feature">📊 Dashboard & Analytics</div>
-    <div class="feature">🎓 Student Management</div>
-    <div class="feature">📅 Attendance</div>
-    <div class="feature">📝 Grades</div>
-  </div>
+  <h2>Login</h2>
+  <form onsubmit="event.preventDefault(); loginUser(logEmail.value, logPassword.value)">
+    <input type="email" id="logEmail" placeholder="Email" required>
+    <input type="password" id="logPassword" placeholder="Password" required>
+    <button type="submit">Login</button>
+  </form>
 
-  <!-- RIGHT -->
-  <div class="right">
-
-    <div class="tabs">
-      <div id="loginTab" class="tab active" onclick="switchTab('login')">Login</div>
-      <div id="registerTab" class="tab" onclick="switchTab('register')">Register</div>
-    </div>
-
-    <h2 id="title">Welcome Back 👋</h2>
-
-    <div class="input-box">
-      <i class="fa fa-envelope"></i>
-      <input id="email" placeholder="Email">
-    </div>
-
-    <div class="input-box">
-      <i class="fa fa-lock"></i>
-      <input id="password" type="password" placeholder="Password">
-    </div>
-
-    <button id="btn" class="primary" onclick="handleAuth()">Sign In</button>
-
-    <button class="google" onclick="googleLogin()">Continue with Google</button>
-
-  </div>
-
-</div>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import {
-  getAuth,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  GoogleAuthProvider,
-  signInWithPopup
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyDIVgcyflRaYXwaV5wSeKjb1wsocNdpd_8",
-  authDomain: "student-ef9fa.firebaseapp.com",
-  projectId: "student-ef9fa",
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-let mode = "login";
-
-window.switchTab = (type) => {
-  mode = type;
-
-  document.getElementById("loginTab").classList.remove("active");
-  document.getElementById("registerTab").classList.remove("active");
-
-  if (type === "login") {
-    document.getElementById("loginTab").classList.add("active");
-    document.getElementById("btn").innerText = "Sign In";
-    document.getElementById("title").innerText = "Welcome Back 👋";
-  } else {
-    document.getElementById("registerTab").classList.add("active");
-    document.getElementById("btn").innerText = "Register";
-    document.getElementById("title").innerText = "Create Account 🚀";
-  }
-};
-
-window.handleAuth = async () => {
-  const email = document.getElementById("email").value;
-  const pass = document.getElementById("password").value;
-
-  try {
-    if (mode === "login") {
-      await signInWithEmailAndPassword(auth, email, pass);
-    } else {
-      await createUserWithEmailAndPassword(auth, email, pass);
-    }
-    window.location = "dashboard.html";
-  } catch (e) {
-    alert(e.message);
-  }
-};
-
-window.googleLogin = async () => {
-  const provider = new GoogleAuthProvider();
-  await signInWithPopup(auth, provider);
-  window.location = "dashboard.html";
-};
-</script>
-
+  <h2>Or</h2>
+  <button onclick="googleLogin()">Sign in with Google</button>
 </body>
 </html>
