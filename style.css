@@ -1,40 +1,10 @@
-body {
-margin:0;
-font-family: Arial;
-background:#0f172a;
-color:white;
-}
-.sidebar {
-width:200px;
-height:100vh;
-background:#020617;
-position:fixed;
-padding:20px;
-}
-.sidebar a {
-color:white;
-text-decoration:none;
-display:block;
-padding:10px;
-}
-.main {
-margin-left:220px;
-padding:20px;
-}
-.card {
-background:#1e293b;
-padding:20px;
-border-radius:10px;
-}
-.center {
-text-align:center;
-margin-top:100px;
-}
-input,button {
-padding:10px;
-margin:5px;
-}
-button {
-background:#38bdf8;
-border:none;
-}
+body { font-family: Arial, sans-serif; margin: 20px; background: #f9f9f9; }
+h1 { color: #2c3e50; }
+form { margin-bottom: 20px; }
+input, button, select { margin: 5px; padding: 8px; }
+table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+th { background-color: #f4f4f4; }
+button { cursor: pointer; }
+.navbar { background: #2c3e50; color: white; padding: 10px; }
+.navbar a { color: white; margin-right: 15px; text-decoration: none; }
